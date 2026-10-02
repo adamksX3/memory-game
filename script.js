@@ -20,7 +20,18 @@ function shuffle(array) {
 function createCard(symbol) {
     const card = createElement("button", "card");
     card.dataset.symbol = symbol;
+    card.addEventListener('click', () => {
+        openCard(card);
+    });
     return card;
+}
+
+function openCard(card) {
+    if (card.classList.contains("card--open")) {
+        return;
+    }
+    card.classList.add("card--open");
+    card.textContent = card.dataset.symbol;
 }
 
 const title = createElement("h1", "title", "Memory Game");

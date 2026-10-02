@@ -23,3 +23,9 @@ body {
   color: #fff;
   cursor: pointer;
 }
+
+.card--open {
+  background: #00e5ff22;
+  border-color: #ff2bd6;
+  cursor: default;
+}
