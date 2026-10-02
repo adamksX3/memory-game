@@ -17,6 +17,12 @@ function shuffle(array) {
     return array;
 }
 
+function createCard(symbol) {
+    const card = createElement("button", "card");
+    card.dataset.symbol = symbol;
+    return card;
+}
+
 const title = createElement("h1", "title", "Memory Game");
 const header = createElement("header", "header");
 const newGameButton = createElement("button", "button", "New Game");
@@ -32,3 +38,12 @@ const deck = [...symbols, ...symbols];
 header.append(title, newGameButton, leaderboardButton, movesCounter, pairsCounter);
 main.append(board);
 document.body.append(header, main);
+
+function startGame() {
+    board.replaceChildren();
+    shuffle(deck).forEach((symbol) => {
+        board.append(createCard(symbol));
+    });
+}
+
+startGame();
