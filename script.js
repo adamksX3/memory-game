@@ -27,11 +27,46 @@ function createCard(symbol) {
 }
 
 function openCard(card) {
+    if (isLocked) {
+        return;
+    }
     if (card.classList.contains("card--open")) {
         return;
     }
     card.classList.add("card--open");
     card.textContent = card.dataset.symbol;
+    if (firstCard === null) {
+        firstCard = card;
+        return;
+    }
+    secondCard = card;
+    moves++;
+    movesCounter.textContent = `Moves: ${moves}`;
+    checkPair();
+}
+
+function checkPair() {
+    if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
+        pairs++;
+        pairsCounter.textContent = `Pairs: ${pairs} / 8`;
+        firstCard = null;
+        secondCard = null;
+        return;
+    }
+
+    isLocked = true;
+    closeTimer = setTimeout(() => {
+        closeCard(firstCard);
+        closeCard(secondCard);
+        firstCard = null;
+        secondCard = null;
+        isLocked = false;
+    }, 1000);
+}
+
+function closeCard(card) {
+    card.classList.remove("card--open");
+    card.textContent = "";
 }
 
 const title = createElement("h1", "title", "Memory Game");
@@ -45,6 +80,13 @@ const board = createElement("div", "board");
 
 const symbols = ["🚀", "🌙", "⭐", "🔥", "💎", "🎮", "👾", "⚡"];
 const deck = [...symbols, ...symbols];
+
+let firstCard = null;
+let secondCard = null;
+let isLocked = false;
+let moves = 0;
+let pairs = 0;
+let closeTimer = null;
 
 header.append(title, newGameButton, leaderboardButton, movesCounter, pairsCounter);
 main.append(board);
