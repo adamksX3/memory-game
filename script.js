@@ -93,10 +93,20 @@ main.append(board);
 document.body.append(header, main);
 
 function startGame() {
+    clearTimeout(closeTimer);
+    firstCard = null;
+    secondCard = null;
+    isLocked = false;
+    moves = 0;
+    pairs = 0;
+    movesCounter.textContent = "Moves: 0";
+    pairsCounter.textContent = "Pairs: 0 / 8"
     board.replaceChildren();
     shuffle(deck).forEach((symbol) => {
         board.append(createCard(symbol));
     });
 }
+
+newGameButton.addEventListener("click", startGame);
 
 startGame();
