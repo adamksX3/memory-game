@@ -49,6 +49,9 @@ function checkPair() {
     if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
         pairs++;
         pairsCounter.textContent = `Pairs: ${pairs} / 8`;
+        if (pairs === 8) {
+            showWin();
+        }
         firstCard = null;
         secondCard = null;
         return;
@@ -69,6 +72,28 @@ function closeCard(card) {
     card.textContent = "";
 }
 
+function openModal(titleText,...content) {
+    const heading = createElement("h2", "modal-title", titleText);
+    const closeButton = createElement("button", "button", "Close");
+    closeButton.addEventListener("click", closeModal);
+    modal.replaceChildren(heading, ...content, closeButton);
+    overlay.classList.add("overlay--open");
+}
+
+function closeModal() {
+    overlay.classList.remove("overlay--open");
+}
+
+function showWin () {
+    const moveWon = createElement("p", "modal-text", `You won in ${moves} moves!`);
+    const againButton = createElement("button", "button", "New Game");
+    againButton.addEventListener("click", () => {
+        closeModal();
+        startGame();
+    });
+    openModal("Victory!", moveWon, againButton);
+}
+
 const title = createElement("h1", "title", "Memory Game");
 const header = createElement("header", "header");
 const newGameButton = createElement("button", "button", "New Game");
@@ -77,6 +102,8 @@ const movesCounter = createElement("p", "counter", "Moves: 0");
 const pairsCounter = createElement("p", "counter", "Pairs: 0 / 8");
 const main = createElement("main", "main");
 const board = createElement("div", "board");
+const overlay = createElement("div", "overlay");
+const modal = createElement("div", "modal");
 
 const symbols = ["🚀", "🌙", "⭐", "🔥", "💎", "🎮", "👾", "⚡"];
 const deck = [...symbols, ...symbols];
@@ -88,9 +115,10 @@ let moves = 0;
 let pairs = 0;
 let closeTimer = null;
 
+overlay.append(modal);
 header.append(title, newGameButton, leaderboardButton, movesCounter, pairsCounter);
 main.append(board);
-document.body.append(header, main);
+document.body.append(header, main, overlay);
 
 function startGame() {
     clearTimeout(closeTimer);
@@ -100,7 +128,7 @@ function startGame() {
     moves = 0;
     pairs = 0;
     movesCounter.textContent = "Moves: 0";
-    pairsCounter.textContent = "Pairs: 0 / 8"
+    pairsCounter.textContent = "Pairs: 0 / 8";
     board.replaceChildren();
     shuffle(deck).forEach((symbol) => {
         board.append(createCard(symbol));
@@ -108,5 +136,17 @@ function startGame() {
 }
 
 newGameButton.addEventListener("click", startGame);
+
+overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+        closeModal();
+    }
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeModal();
+    }
+});
 
 startGame();
