@@ -85,6 +85,7 @@ function closeModal() {
 }
 
 function showWin () {
+    saveResult();
     const moveWon = createElement("p", "modal-text", `You won in ${moves} moves!`);
     const againButton = createElement("button", "button", "New Game");
     againButton.addEventListener("click", () => {
@@ -92,6 +93,41 @@ function showWin () {
         startGame();
     });
     openModal("Victory!", moveWon, againButton);
+}
+
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    return `${day}.${month}.${date.getFullYear()}`;
+}
+
+function loadResults() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === null) {
+        return [];
+    }
+    return JSON.parse(saved);
+}
+
+function saveResult() {
+    const results = loadResults();
+    results.push({ moves: moves, date: formatDate(new Date()) });
+    results.sort((a, b) => a.moves - b.moves);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(results.slice(0, 10)));
+}
+
+function showLeaderboard() {
+    const results = loadResults();
+    if (results.length === 0) {
+        openModal("Leaderboard", createElement("p", "modal-text", "No results yet"));
+        return;
+    }
+    const list = createElement("ul", "results");
+    results.forEach((result, index) => {
+        const line = `${index + 1}. ${result.moves} moves, ${result.date}`;
+        list.append(createElement("li", "result", line));
+    });
+    openModal("Leaderboard", list);
 }
 
 const title = createElement("h1", "title", "Memory Game");
@@ -107,6 +143,7 @@ const modal = createElement("div", "modal");
 
 const symbols = ["🚀", "🌙", "⭐", "🔥", "💎", "🎮", "👾", "⚡"];
 const deck = [...symbols, ...symbols];
+const STORAGE_KEY = "memory-game-results";
 
 let firstCard = null;
 let secondCard = null;
@@ -136,6 +173,8 @@ function startGame() {
 }
 
 newGameButton.addEventListener("click", startGame);
+
+leaderboardButton.addEventListener("click", showLeaderboard);
 
 overlay.addEventListener("click", (event) => {
     if (event.target === overlay) {
