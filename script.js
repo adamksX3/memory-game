@@ -1,5 +1,6 @@
 import { shuffle } from "./shuffle.js";
 import { createElement } from "./factory.js";
+import { state } from "./state.js";
 
 function createCard(symbol) {
     const card = createElement("button", "card");
@@ -11,7 +12,7 @@ function createCard(symbol) {
 }
 
 function openCard(card) {
-    if (isLocked) {
+    if (state.isLocked) {
         return;
     }
     if (card.classList.contains("card--open")) {
@@ -19,35 +20,35 @@ function openCard(card) {
     }
     card.classList.add("card--open");
     card.textContent = card.dataset.symbol;
-    if (firstCard === null) {
-        firstCard = card;
+    if (state.firstCard === null) {
+        state.firstCard = card;
         return;
     }
-    secondCard = card;
-    moves++;
-    movesCounter.textContent = `Moves: ${moves}`;
+    state.secondCard = card;
+    state.moves++;
+    movesCounter.textContent = `Moves: ${state.moves}`;
     checkPair();
 }
 
 function checkPair() {
-    if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
-        pairs++;
-        pairsCounter.textContent = `Pairs: ${pairs} / 8`;
-        if (pairs === 8) {
+    if (state.firstCard.dataset.symbol === state.secondCard.dataset.symbol) {
+        state.pairs++;
+        pairsCounter.textContent = `Pairs: ${state.pairs} / 8`;
+        if (state.pairs === 8) {
             showWin();
         }
-        firstCard = null;
-        secondCard = null;
+        state.firstCard = null;
+        state.secondCard = null;
         return;
     }
 
-    isLocked = true;
-    closeTimer = setTimeout(() => {
-        closeCard(firstCard);
-        closeCard(secondCard);
-        firstCard = null;
-        secondCard = null;
-        isLocked = false;
+    state.isLocked = true;
+    state.closeTimer = setTimeout(() => {
+        closeCard(state.firstCard);
+        closeCard(state.secondCard);
+        state.firstCard = null;
+        state.secondCard = null;
+        state.isLocked = false;
     }, 1000);
 }
 
@@ -70,7 +71,7 @@ function closeModal() {
 
 function showWin () {
     saveResult();
-    const moveWon = createElement("p", "modal-text", `You won in ${moves} moves!`);
+    const moveWon = createElement("p", "modal-text", `You won in ${state.moves} moves!`);
     const againButton = createElement("button", "button", "New Game");
     againButton.addEventListener("click", () => {
         closeModal();
@@ -95,7 +96,7 @@ function loadResults() {
 
 function saveResult() {
     const results = loadResults();
-    results.push({ moves: moves, date: formatDate(new Date()) });
+    results.push({ moves: state.moves, date: formatDate(new Date()) });
     results.sort((a, b) => a.moves - b.moves);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(results.slice(0, 10)));
 }
@@ -129,25 +130,18 @@ const symbols = ["🚀", "🌙", "⭐", "🔥", "💎", "🎮", "👾", "⚡"];
 const deck = [...symbols, ...symbols];
 const STORAGE_KEY = "memory-game-results";
 
-let firstCard = null;
-let secondCard = null;
-let isLocked = false;
-let moves = 0;
-let pairs = 0;
-let closeTimer = null;
-
 overlay.append(modal);
 header.append(title, newGameButton, leaderboardButton, movesCounter, pairsCounter);
 main.append(board);
 document.body.append(header, main, overlay);
 
 function startGame() {
-    clearTimeout(closeTimer);
-    firstCard = null;
-    secondCard = null;
-    isLocked = false;
-    moves = 0;
-    pairs = 0;
+    clearTimeout(state.closeTimer);
+    state.firstCard = null;
+    state.secondCard = null;
+    state.isLocked = false;
+    state.moves = 0;
+    state.pairs = 0;
     movesCounter.textContent = "Moves: 0";
     pairsCounter.textContent = "Pairs: 0 / 8";
     board.replaceChildren();
