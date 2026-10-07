@@ -3,16 +3,16 @@ import { createElement } from "./factory.js";
 import { state } from "./state.js";
 import { movesCounter, pairsCounter } from "./dom.js";
 
-function createCard(symbol) {
+function createCard(symbol, onWin) {
     const card = createElement("button", "card");
     card.dataset.symbol = symbol;
     card.addEventListener('click', () => {
-        openCard(card);
+        openCard(card, onWin);
     });
     return card;
 }
 
-function openCard(card) {
+function openCard(card, onWin) {
     if (state.isLocked) {
         return;
     }
@@ -28,15 +28,15 @@ function openCard(card) {
     state.secondCard = card;
     state.moves++;
     movesCounter.textContent = `Moves: ${state.moves}`;
-    checkPair();
+    checkPair(onWin);
 }
 
-function checkPair() {
+function checkPair(onWin) {
     if (state.firstCard.dataset.symbol === state.secondCard.dataset.symbol) {
         state.pairs++;
         pairsCounter.textContent = `Pairs: ${state.pairs} / 8`;
         if (state.pairs === 8) {
-            showWin();
+            onWin();
         }
         state.firstCard = null;
         state.secondCard = null;
@@ -145,7 +145,7 @@ function startGame() {
     pairsCounter.textContent = "Pairs: 0 / 8";
     board.replaceChildren();
     shuffle(deck).forEach((symbol) => {
-        board.append(createCard(symbol));
+        board.append(createCard(symbol, showWin));
     });
 }
 
