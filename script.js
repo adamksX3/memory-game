@@ -1,3 +1,5 @@
+import { shuffle } from "./shuffle.js";
+
 function createElement(tag, className, text) {
     const element = document.createElement(tag);
     if (className) {
@@ -8,14 +10,6 @@ function createElement(tag, className, text) {
     }
     return element;
 } 
-
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
 
 function createCard(symbol) {
     const card = createElement("button", "card");
