@@ -1,6 +1,7 @@
 import { shuffle } from "./shuffle.js";
 import { createElement } from "./factory.js";
 import { state } from "./state.js";
+import { movesCounter, pairsCounter } from "./dom.js";
 
 function createCard(symbol) {
     const card = createElement("button", "card");
@@ -119,8 +120,6 @@ const title = createElement("h1", "title", "Memory Game");
 const header = createElement("header", "header");
 const newGameButton = createElement("button", "button", "New Game");
 const leaderboardButton = createElement("button", "button", "Leaderboard");
-const movesCounter = createElement("p", "counter", "Moves: 0");
-const pairsCounter = createElement("p", "counter", "Pairs: 0 / 8");
 const main = createElement("main", "main");
 const board = createElement("div", "board");
 const overlay = createElement("div", "overlay");
