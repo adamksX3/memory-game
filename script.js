@@ -16,13 +16,13 @@ function closeModal() {
     overlay.classList.remove("overlay--open");
 }
 
-function showWin () {
+function showWin (onNewGame) {
     saveResult();
     const moveWon = createElement("p", "modal-text", `You won in ${state.moves} moves!`);
     const againButton = createElement("button", "button", "New Game");
     againButton.addEventListener("click", () => {
         closeModal();
-        startGame();
+        onNewGame();
     });
     openModal("Victory!", moveWon, againButton);
 }
@@ -89,7 +89,7 @@ function startGame() {
     pairsCounter.textContent = "Pairs: 0 / 8";
     board.replaceChildren();
     shuffle(deck).forEach((symbol) => {
-        board.append(createCard(symbol, showWin));
+        board.append(createCard(symbol, () => showWin(startGame)));
     });
 }
 
