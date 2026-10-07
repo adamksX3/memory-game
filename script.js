@@ -3,18 +3,7 @@ import { createElement } from "./factory.js";
 import { state } from "./state.js";
 import { movesCounter, pairsCounter, overlay, modal } from "./dom.js";
 import { createCard } from "./cards.js";
-
-function openModal(titleText,...content) {
-    const heading = createElement("h2", "modal-title", titleText);
-    const closeButton = createElement("button", "button", "Close");
-    closeButton.addEventListener("click", closeModal);
-    modal.replaceChildren(heading, ...content, closeButton);
-    overlay.classList.add("overlay--open");
-}
-
-function closeModal() {
-    overlay.classList.remove("overlay--open");
-}
+import { openModal, closeModal } from "./modal.js";
 
 function showWin (onNewGame) {
     saveResult();
