@@ -1,15 +1,5 @@
 import { shuffle } from "./shuffle.js";
-
-function createElement(tag, className, text) {
-    const element = document.createElement(tag);
-    if (className) {
-        element.className = className;
-    } 
-    if (text) {
-        element.textContent = text;
-    }
-    return element;
-} 
+import { createElement } from "./factory.js";
 
 function createCard(symbol) {
     const card = createElement("button", "card");
