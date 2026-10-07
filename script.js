@@ -1,7 +1,7 @@
 import { shuffle } from "./shuffle.js";
 import { createElement } from "./factory.js";
 import { state } from "./state.js";
-import { movesCounter, pairsCounter } from "./dom.js";
+import { movesCounter, pairsCounter, overlay, modal } from "./dom.js";
 import { createCard } from "./cards.js";
 
 function openModal(titleText,...content) {
@@ -68,8 +68,6 @@ const newGameButton = createElement("button", "button", "New Game");
 const leaderboardButton = createElement("button", "button", "Leaderboard");
 const main = createElement("main", "main");
 const board = createElement("div", "board");
-const overlay = createElement("div", "overlay");
-const modal = createElement("div", "modal");
 
 const symbols = ["🚀", "🌙", "⭐", "🔥", "💎", "🎮", "👾", "⚡"];
 const deck = [...symbols, ...symbols];
